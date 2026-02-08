@@ -119,6 +119,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   const addNewOrder = useCallback(() => {
+    if (courierStatus !== CourierStatus.IN_CFZ) {
+      setNotification("Новое задание можно назначить только находясь в ЦФЗ");
+      return;
+    }
+
     const house = Math.floor(Math.random() * 24) + 1;
     const apt = Math.floor(Math.random() * 99) + 1;
     const floor = Math.floor(Math.random() * 9) + 1;
@@ -138,7 +143,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
     setOrders(prev => [...prev, newOrder]);
     setNotification(`Назначена доставка: ${newOrder.id}`);
-  }, []);
+  }, [courierStatus]);
 
   const checkReturnToCFZ = useCallback(() => {
      setTimeout(() => {

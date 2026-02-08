@@ -3,12 +3,12 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { User, Package, MessageSquare, Bell, RefreshCw, PlusCircle } from 'lucide-react';
 import { useApp } from '../store/AppContext.tsx';
-import { OrderStatus } from '../types.ts';
+import { OrderStatus, CourierStatus } from '../types.ts';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { orders, notification, setNotification, restartApp, addNewOrder } = useApp();
+  const { orders, courierStatus, notification, setNotification, restartApp, addNewOrder } = useApp();
 
   const assignedCount = orders.filter(o => [OrderStatus.ASSEMBLY, OrderStatus.READY, OrderStatus.TRANSFERRED_TO_COURIER].includes(o.status)).length;
 
@@ -22,6 +22,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     navigate('/deliveries');
     setNotification(null);
   };
+
+  const isNotInCFZ = courierStatus !== CourierStatus.IN_CFZ;
 
   return (
     <div className="flex flex-col min-h-screen max-w-md mx-auto bg-gray-50 shadow-xl overflow-hidden relative">
@@ -37,7 +39,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </button>
         <button 
           onClick={addNewOrder}
-          className="flex-[1.5] bg-brand hover:bg-brand-dark text-white text-[10px] font-black uppercase tracking-wider py-2 rounded-lg flex items-center justify-center gap-2 transition-colors active:scale-95 shadow-lg shadow-brand/20"
+          disabled={isNotInCFZ}
+          className={`flex-[1.5] text-[10px] font-black uppercase tracking-wider py-2 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg ${
+            isNotInCFZ 
+              ? 'bg-slate-700 text-slate-500 cursor-not-allowed opacity-50 shadow-none' 
+              : 'bg-brand hover:bg-brand-dark text-white active:scale-95 shadow-brand/20'
+          }`}
         >
           <PlusCircle className="w-3 h-3" />
           Назначить новое задание
