@@ -18,6 +18,8 @@ interface AppContextType {
   returnToCFZ: () => void;
   notification: string | null;
   setNotification: (msg: string | null) => void;
+  restartApp: () => void;
+  addNewOrder: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -56,7 +58,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [tickets, setTickets] = useState<SupportTicket[]>(INITIAL_TICKETS);
   const [notification, setNotification] = useState<string | null>(null);
 
-  // Логика автоматического скрытия уведомления через 15 секунд
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => {
@@ -103,7 +104,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return () => clearInterval(timer);
   }, [courierStatus]);
 
-  // Триггер "Назначена доставка" при получении заказов
   useEffect(() => {
     const activeOrders = orders.filter(o => [OrderStatus.ASSEMBLY, OrderStatus.READY].includes(o.status));
     if (activeOrders.length > 0 && courierStatus === CourierStatus.IN_CFZ) {
@@ -111,6 +111,34 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setNotification("Назначена доставка");
     }
   }, [orders, courierStatus]);
+
+  const restartApp = useCallback(() => {
+    setOrders(MOCK_ORDERS);
+    setCourierStatus(CourierStatus.IN_CFZ);
+    setNotification(null);
+  }, []);
+
+  const addNewOrder = useCallback(() => {
+    const house = Math.floor(Math.random() * 24) + 1;
+    const apt = Math.floor(Math.random() * 99) + 1;
+    const floor = Math.floor(Math.random() * 9) + 1;
+    
+    const newOrder: Order = {
+      id: `ORD-${Math.floor(7000 + Math.random() * 1000)}`,
+      address: `СПб, Невский пр. д. ${house}, кв. ${apt}`,
+      floor: floor.toString(),
+      comment: 'Новый заказ из панели управления',
+      status: OrderStatus.ASSEMBLY,
+      assemblyTimeLeft: 10,
+      deliveryTimeLeft: 900,
+      items: [
+        { id: `new-${Date.now()}-1`, name: 'Молоко фермерское', quantity: 1 },
+        { id: `new-${Date.now()}-2`, name: 'Печенье овсяное', quantity: 1 }
+      ]
+    };
+    setOrders(prev => [...prev, newOrder]);
+    setNotification(`Назначена доставка: ${newOrder.id}`);
+  }, []);
 
   const checkReturnToCFZ = useCallback(() => {
      setTimeout(() => {
@@ -155,7 +183,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{ 
       orders, courierStatus, profile, tickets, returnTimeLeft,
       setOrders, setCourierStatus, addTicket, acceptOrders, finishOrder, cancelOrder, returnToCFZ,
-      notification, setNotification
+      notification, setNotification, restartApp, addNewOrder
     }}>
       {children}
     </AppContext.Provider>

@@ -4,6 +4,64 @@ import { MapPin, ShieldCheck, ChevronRight } from 'lucide-react';
 import { useApp } from '../store/AppContext';
 import { CourierStatus } from '../types';
 
+const Team6Logo: React.FC<{ size?: number }> = ({ size = 64 }) => (
+  <div style={{ width: size, height: size * 1.2 }} className="relative flex flex-col items-center justify-center mb-2">
+    <svg viewBox="0 0 100 110" className="w-full h-full drop-shadow-lg">
+      <defs>
+        <radialGradient id="ballGrad" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stopColor="#FF7EB3" />
+          <stop offset="40%" stopColor="#FA3D67" />
+          <stop offset="100%" stopColor="#D62D52" />
+        </radialGradient>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+          <feOffset dx="1" dy="1" result="offsetblur" />
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.3" />
+          </feComponentTransfer>
+          <feMerge>
+            <feMergeNode />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      
+      {/* Outer Hexagon Frame (3D look) */}
+      <path 
+        d="M50 5 L90 27.5 L90 72.5 L50 95 L10 72.5 L10 27.5 Z" 
+        fill="white" 
+        stroke="#FA3D67" 
+        strokeWidth="3"
+        strokeLinejoin="round"
+      />
+      
+      {/* Circuit board paths */}
+      <path d="M25 30 L35 30 L35 20" stroke="#FA3D67" strokeWidth="1.5" fill="none" opacity="0.6" />
+      <circle cx="25" cy="30" r="2" fill="#FA3D67" opacity="0.6" />
+      <path d="M75 70 L65 70 L65 80" stroke="#FA3D67" strokeWidth="1.5" fill="none" opacity="0.6" />
+      <circle cx="75" cy="70" r="2" fill="#FA3D67" opacity="0.6" />
+      
+      {/* Binary bits placeholders */}
+      <text x="35" y="20" fontSize="8" fontWeight="900" fill="#FA3D67" opacity="0.4" fontFamily="monospace">0111</text>
+      <text x="60" y="85" fontSize="8" fontWeight="900" fill="#FA3D67" opacity="0.4" fontFamily="monospace">0110</text>
+      
+      {/* The Ball */}
+      <circle cx="50" cy="50" r="28" fill="url(#ballGrad)" filter="url(#shadow)" />
+      
+      {/* Highlight on ball */}
+      <ellipse cx="40" cy="40" rx="8" ry="5" fill="white" opacity="0.3" transform="rotate(-30 40 40)" />
+      
+      {/* Number Circle */}
+      <circle cx="45" cy="45" r="12" fill="white" />
+      <text x="45" y="50" fontSize="16" fontWeight="900" textAnchor="middle" fill="#1e1e1e" fontFamily="Arial">6</text>
+    </svg>
+    <div className="flex flex-col items-center -mt-2">
+      <span className="text-[12px] font-black text-gray-900 tracking-tighter">Team 6</span>
+      <span className="text-[7px] font-bold text-gray-400 uppercase tracking-widest">Samokat Dev</span>
+    </div>
+  </div>
+);
+
 const ProfileScreen: React.FC = () => {
   const { profile, courierStatus } = useApp();
 
@@ -70,13 +128,15 @@ const ProfileScreen: React.FC = () => {
 
       {/* Footer Branding */}
       <div className="mt-12 text-center flex flex-col items-center gap-4">
-        <div className="w-12 h-12 bg-brand squircle flex items-center justify-center p-2 shadow-lg shadow-brand/20">
-            <div className="w-full h-full bg-white rounded-full relative overflow-hidden">
-                <div className="absolute inset-0 bg-brand rounded-full transform scale-[0.45] translate-x-1"></div>
-                <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-white"></div>
-            </div>
+        <Team6Logo size={90} />
+        <div className="space-y-1">
+          <p className="text-[11px] text-gray-800 font-black uppercase tracking-[0.05em]">
+            Версия V.0.0.5
+          </p>
+          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em]">
+            Команда 6 BA CAMP
+          </p>
         </div>
-        <p className="text-[10px] text-gray-300 font-bold uppercase tracking-[0.2em]">Версия v0.2.1 • MVP Edition</p>
       </div>
     </div>
   );

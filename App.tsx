@@ -17,6 +17,7 @@ const App: React.FC = () => {
       <Router>
         <Layout>
           <Routes>
+            {/* Start directly on profile screen as requested */}
             <Route path="/" element={<Navigate to="/profile" replace />} />
             <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/deliveries" element={<DeliveryScreen />} />
