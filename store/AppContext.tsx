@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Order, OrderStatus, CourierStatus, CourierProfile, SupportTicket } from '../types';
-import { MOCK_ORDERS } from '../constants';
+import { MOCK_ORDERS, PINGU_AVATAR_BASE64 } from '../constants';
 
 interface AppContextType {
   orders: Order[];
@@ -52,7 +52,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [returnTimeLeft, setReturnTimeLeft] = useState<number>(600);
   const [profile] = useState<CourierProfile>({
     name: 'Иван Курьеров',
-    photo: 'https://picsum.photos/seed/courier/200/200',
+    // Используем base64 строку, сохраненную в константах
+    photo: PINGU_AVATAR_BASE64,
     cfzAddress: 'СПб, Дворцовая пл. д. 1'
   });
   const [tickets, setTickets] = useState<SupportTicket[]>(INITIAL_TICKETS);
